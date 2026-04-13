@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title><%= post.title %> - CxE Photos</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* CSS nhúng tạm để dàn trang giống Pinterest */
+        .pin-detail-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            background-color: #e9e9e9;
+            min-height: 100vh;
+        }
+        .pin-container {
+            display: flex;
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 1px 20px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .pin-image {
+            flex: 1;
+            /* Đảm bảo ảnh hiển thị đẹp không bị méo */
+            display: flex;
+        }
+        .pin-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        .pin-info {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+        }
+        .pin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn-save {
+            background-color: #e60023;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .pin-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .pin-desc {
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+        /* Khu vực bình luận (Hiện tại là giao diện giả lập) */
+        .comments-section {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pin-detail-wrapper">
+        <div class="pin-container">
+            <div class="pin-image">
+                <img src="<%= post.imageUrl %>" alt="<%= post.title %>">
+            </div>
+
+            <div class="pin-info">
+                <div class="pin-header">
+                    <div class="action-icons">
+                        ❤️ 📤 ⋯
+                    </div>
+                    <button class="btn-save">Lưu</button>
+                </div>
+
+                <div class="author-info">
+                    <div class="author-avatar"></div>
+                    <div>
+                        <strong>Tác giả ẩn danh</strong><br>
+                        <small>Người theo dõi</small>
+                    </div>
+                </div>
+
+                <h1 class="pin-title"><%= post.title %></h1>
+                <p class="pin-desc"><%= post.description %></p>
+
+                <div class="comments-section">
+                    <h3>0 Nhận xét</h3>
+                    <p style="color: #767676;">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

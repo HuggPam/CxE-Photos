@@ -12,7 +12,11 @@ const photosRouter = require('./routers/photos'); // Thêm router xử lý ảnh
 
 const uri = process.env.MONGODB_URI; 
 mongoose.connect(uri)
-    .then(() => console.log('Đã kết nối MongoDB Atlas thành công!'))
+    .then(() => {
+        console.log('Đã kết nối MongoDB Atlas thành công!');
+        // Thêm dòng này để xem nó đang vào database tên gì:
+        console.log('=== ĐANG CHẠY TRONG DATABASE:', mongoose.connection.db.databaseName, '===');
+    })
     .catch(err => console.log('Lỗi kết nối CSDL: ', err));
 
 app.set('views', path.join(__dirname, 'views'));

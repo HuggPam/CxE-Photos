@@ -19,9 +19,31 @@
             <a href="/" class="sidebar-item active">
                 <i class="fa-solid fa-house"></i>
             </a>
-            <a href="/upload" class="sidebar-item">
-                <i class="fa-solid fa-plus"></i>
-            </a>
+            <div class="sidebar-action-wrapper">
+                <a href="#" class="sidebar-item" id="btn-create">
+                    <i class="fa-solid fa-plus"></i>
+                </a>
+                
+                <div class="create-menu-popover" id="createMenu">
+                    <div class="menu-title">Tạo</div>
+                    
+                    <a href="/upload" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-thumbtack"></i></div>
+                        <div class="menu-text">
+                            <strong>Ghim</strong>
+                            <span>Đăng ảnh hoặc video và thêm liên kết...</span>
+                        </div>
+                    </a>
+
+                    <a href="#" class="menu-item">
+                        <div class="menu-icon"><i class="fa-solid fa-table-cells-large"></i></div>
+                        <div class="menu-text">
+                            <strong>Bảng</strong>
+                            <span>Sắp xếp một bộ sưu tập Ghim bạn yêu thích...</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
             <a href="/profile" class="sidebar-item mt-auto">
                 <i class="fa-solid fa-user"></i>
             </a>
@@ -46,42 +68,59 @@
                     </div>
                 </div>
             </div>
-
+        
             <div class="container-fluid mt-3">
-                <div class="luoi-anh-cxe">
-                    <% 
-    // 1. Định nghĩa mảng gốc 10 tấm
-    const anhGoc = [
-        "https://picsum.photos/300/400", "https://picsum.photos/300/200",
-        "https://picsum.photos/300/500", "https://picsum.photos/300/300",
-        "https://picsum.photos/300/450", "https://picsum.photos/300/250",
-        "https://picsum.photos/300/600", "https://picsum.photos/300/350",
-        "https://picsum.photos/300/420", "https://picsum.photos/300/280"
-    ]; 
-    
-    // 2. Nhân bản lên thành 20 tấm bằng cách nối mảng (Dùng concat cho an toàn)
-    const anhMau = anhGoc.concat(anhGoc); 
-%>
-
-                        <% anhMau.forEach(function(url) { %>
+               <div class="luoi-anh-cxe">
+                    <% if (images && images.length > 0) { %>
+                        <% images.forEach(function(post) { %>
                             <div class="item-anh">
-                                <img src="<%= url %>" alt="Ảnh CxE Photos" loading="lazy">
+                                <a href="/photo/<%= post._id %>">
+                                    <img src="<%= post.imageUrl %>" alt="<%= post.title %>" loading="lazy">
+                                </a>
+                                
                                 <div class="overlay-anh">
                                     <button class="btn-luu-anh">Lưu</button>
                                 </div>
+                                
+                                <p class="mt-2 fw-bold" style="font-size: 14px; padding-left: 5px;">
+                                    <%= post.title %>
+                                </p>
                             </div>
-                            <% }); %>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="w-100 text-center mt-5">
+                            <p class="text-muted">Chưa có bài đăng nào. Hãy là người đầu tiên đăng ảnh!</p>
+                        </div>
+                    <% } %>
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
-
     <script>
         const sidebarItems = document.querySelectorAll('.sidebar-item');
         sidebarItems.forEach(item => {
             item.addEventListener('click', function () {
                 sidebarItems.forEach(i => i.classList.remove('active'));
                 this.classList.add('active');
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnCreate = document.getElementById('btn-create');
+            const createMenu = document.getElementById('createMenu');
+
+            // Bật/tắt menu khi nhấn nút +
+            btnCreate.addEventListener('click', function(e) {
+                e.preventDefault(); // Ngăn trình duyệt nhảy lên đầu trang
+                createMenu.classList.toggle('show');
+            });
+
+            // Tự động đóng menu nếu click ra ngoài
+            document.addEventListener('click', function(e) {
+                if (!btnCreate.contains(e.target) && !createMenu.contains(e.target)) {
+                    createMenu.classList.remove('show');
+                }
             });
         });
     </script>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ảnh mới - CxE Photos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Style riêng cho trang đăng ảnh */
+        
+        /* -- Header Tạo Ghim -- */
+        .page-header {
+            padding: 20px 40px 0 40px;
+            margin-bottom: 10px;
+        }
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111;
+            margin: 0;
+        }
+
+        .upload-container {
+            max-width: 880px;
+            margin: 20px auto 40px auto;
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            min-height: 500px;
+        }
+
+        .upload-left {
+            flex: 1;
+            background-color: #efefef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            margin: 20px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .upload-left:hover { border-color: #ffc107; }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            color: #767676;
+        }
+
+        .upload-placeholder i { font-size: 3rem; margin-bottom: 10px; color: #ffc107; }
+
+        .upload-right {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* -- Style khối nhập liệu xám bo tròn (Giống Pinterest) -- */
+        .form-label-custom {
+            font-size: 12px;
+            color: #5f6368;
+            margin-bottom: 8px;
+            display: block;
+            padding-left: 10px;
+        }
+
+        .form-control-gray {
+            background-color: #e9e9e9;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 14px 20px;
+            font-size: 16px;
+            color: #111;
+            transition: all 0.2s ease;
+            box-shadow: none;
+        }
+
+        .form-control-gray:focus {
+            background-color: #ffffff;
+            border-color: #ddd;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+            outline: none;
+        }
+
+        /* -- Trạng thái Khóa (Disabled) -- */
+        .form-control-gray:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #f5f5f5;
+        }
+
+        .btn-post {
+            background-color: #ffc107;
+            color: white;
+            font-weight: bold;
+            border-radius: 25px;
+            padding: 14px;
+            border: none;
+            margin-top: auto;
+            transition: 0.2s;
+        }
+
+        .btn-post:hover:not(:disabled) { background-color: #e5ad06; }
+
+        /* Nút đăng mờ đi khi bị khóa */
+        .btn-post:disabled {
+            background-color: #e0e0e0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body class="text-dark fw-medium">
+
+    <div class="d-flex">
+        <div class="sidebar d-flex flex-column align-items-center">
+            <a href="/" class="sidebar-logo"> <img src="/images/logo.png" alt="Logo" class="img-logo"></a>
+            <a href="/" class="sidebar-item">
+                <i class="fa-solid fa-house"></i>
+            </a>
+            <a href="/upload" class="sidebar-item active">
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <a href="/profile" class="sidebar-item mt-auto">
+                <i class="fa-solid fa-user"></i>
+            </a>
+        </div>
+
+        <div class="main-content flex-grow-1">
+            <div class="top-bar">
+                <div class="header-container">
+                    <div class="search-box">
+                        <i class="fa fa-search"></i>
+                        <input type="text" class="search-input" placeholder="Tìm kiếm hình ảnh...">
+                    </div>
+                    <div class="user-profile">
+                        <% if (user) { %>
+                            <img src="<%= user.anhDaiDien %>" alt="Avatar" class="avatar-circle">
+                            <a href="/auth/logout" class="btn-logout">Đăng xuất</a>
+                        <% } else { %>
+                            <a href="/auth/google" class="btn-dang-nhap">Đăng nhập</a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-header">
+                <h2>Tạo Ghim</h2>
+            </div>
+
+            <div class="container-fluid">
+                <form action="/upload" method="POST" enctype="multipart/form-data">
+                    <div class="upload-container">
+                        
+                        <div class="upload-left" onclick="document.getElementById('fileInput').click();">
+                            <input type="file" id="fileInput" name="image" hidden accept="image/*" required>
+                            
+                            <div class="upload-placeholder" id="placeholderText">
+                                <i class="fa-solid fa-circle-arrow-up"></i>
+                                <p>Nhấp vào đây để tải ảnh lên</p>
+                                <small class="text-muted">Nên dùng file .jpg, .png chất lượng cao</small>
+                            </div>
+                            
+                            <img id="imagePreview" src="#" alt="Xem trước ảnh">
+                        </div>
+
+                        <div class="upload-right">
+                            <div class="mb-4">
+                                <label class="form-label-custom">Tiêu đề</label>
+                                <input type="text" id="inputTitle" name="title" class="form-control form-control-gray" 
+                                    placeholder="Thêm tiêu đề" required disabled>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label-custom">Mô tả</label>
+                                <textarea id="inputDesc" name="description" class="form-control form-control-gray" 
+                                    placeholder="Thêm mô tả chi tiết" rows="5" disabled></textarea>
+                            </div>
+
+                            <button type="submit" id="btnSubmit" class="btn-post w-100" disabled>Đăng ngay</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Các DOM elements
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const placeholderText = document.getElementById('placeholderText');
+        
+        const inputTitle = document.getElementById('inputTitle');
+        const inputDesc = document.getElementById('inputDesc');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        // Xử lý khi chọn ảnh
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            
+            if (file) {
+                // Đọc và hiển thị ảnh
+                const reader = new FileReader();
+                placeholderText.style.display = 'none';
+                imagePreview.style.display = 'block';
+
+                reader.onload = function(e) {
+                    imagePreview.setAttribute('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+
+                // --- MỞ KHÓA FORM ---
+                inputTitle.disabled = false;
+                inputDesc.disabled = false;
+                btnSubmit.disabled = false;
+                
+                // Focus vào ô tiêu đề cho người dùng gõ luôn
+                inputTitle.focus();
+                
+            } else {
+                // Nếu người dùng ấn Cancel (Hủy chọn ảnh)
+                placeholderText.style.display = 'block';
+                imagePreview.style.display = 'none';
+                imagePreview.setAttribute('src', '#');
+
+                // --- KHÓA FORM LẠI ---
+                inputTitle.disabled = true;
+                inputDesc.disabled = true;
+                btnSubmit.disabled = true;
+            }
+        });
+    </script>
+</body>
+
+</html>
