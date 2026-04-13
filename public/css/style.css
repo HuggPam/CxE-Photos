@@ -217,6 +217,24 @@ body {
     font-size: 13px;
 }
 
+.thong-bao-trong {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    min-height: 300px;
+    padding: 40px;
+}
+
+.thong-bao-trong p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+
 /* Responsive */
 @media (max-width: 1600px) {
     .luoi-anh-cxe { column-count: 6 !important; } 

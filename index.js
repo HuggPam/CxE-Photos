@@ -8,7 +8,7 @@ const app = express();
 
 const indexRouter = require('./routers/index');
 const authRouter = require('./routers/auth');
-const photosRouter = require('./routers/photos'); // Thêm router xử lý ảnh Google Photos
+const thuVienRouter = require('./routers/thu_vien');
 
 const uri = process.env.MONGODB_URI; 
 mongoose.connect(uri)
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);     
-app.use('/photos', photosRouter); 
+app.use('/thu_vien', thuVienRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -7,8 +7,10 @@ router.get('/google', passport.authenticate('google', {
     scope: [
         'profile', 
         'email', 
-        'https://www.googleapis.com/auth/photoslibrary.readonly' // QUYỀN XEM ẢNH ĐÂY NÈ!
-    ] 
+        'https://www.googleapis.com/auth/photospicker.mediaitems.readonly' // CHỖ NÀY PHẢI ĐỔI NÈ BÁC!
+    ],
+    prompt: 'consent',   
+    accessType: 'offline' 
 }));
 
 // Link: /auth/google/callback
