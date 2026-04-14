@@ -53,14 +53,15 @@
                     <% if (images && images.length> 0) { %>
                         <% images.forEach(function(img) { %>
                             <div class="item-anh">
-                                <img src="/thu_vien/anh_proxy?url=<%= encodeURIComponent(img.baseUrl) %>"
+                                <img src="/thu_vien/anh_proxy?url=<%= encodeURIComponent(img.mediaFile.baseUrl + '=w500') %>"
                                     alt="Google Photo" loading="lazy">
 
                                 <div class="overlay-anh">
                                     <form action="/thu_vien/chia_se" method="POST" style="width: 90%;">
-                                        <input type="hidden" name="urlgoc" value="<%= img.baseUrl %>">
+                                        <input type="hidden" name="urlgoc" value="<%= img.mediaFile.baseUrl %>">
+
                                         <input type="text" name="tieude" class="form-control form-control-sm mb-2"
-                                            placeholder="Tiêu đề ảnh...">
+                                            placeholder="Tiêu đề ảnh..." required>
                                         <button type="submit" class="btn-luu-anh w-100">Chia sẻ ngay</button>
                                     </form>
                                 </div>

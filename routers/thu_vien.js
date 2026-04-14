@@ -33,7 +33,7 @@ router.get('/danh_sach', async (req, res) => {
 });
 
 
-router.get('/anh-proxy', async (req, res) => {
+router.get('/anh_proxy', async (req, res) => {
     try {
         const imageUrl = req.query.url;
         const response = await axios.get(imageUrl, {
@@ -45,36 +45,62 @@ router.get('/anh-proxy', async (req, res) => {
 });
 
 
-router.post('/chia-se', async (req, res) => {
+router.post('/chia_se', async (req, res) => {
+    console.log("=== [START] BẮT ĐẦU CHIA SẺ ẢNH FROM GOOGLE ===");
+    
     try {
+        // LOG 1: Kiểm tra dữ liệu Form gửi lên
         const { urlgoc, tieude } = req.body;
-        
-        // 1. Server tự lấy ảnh từ Google về (vì Cloudinary không có token)
+        console.log("-> Dữ liệu nhận được:", { urlgoc: urlgoc ? "Có link" : "RỖNG!", tieude });
+
+        if (!urlgoc) {
+            console.error("❌ Lỗi: Không nhận được urlgoc từ Form. Bác check lại name='urlgoc' ở EJS nha!");
+            return res.status(400).send("Thiếu link ảnh gốc!");
+        }
+
+        // LOG 2: Tải ảnh từ Google
+        console.log("-> Đang tải ảnh từ Google...");
         const googleRes = await axios.get(`${urlgoc}=s0`, {
             responseType: 'arraybuffer',
             headers: { 'Authorization': `Bearer ${req.user.accessToken}` }
+        }).catch(err => {
+            console.error("❌ Lỗi Google Fetch:", err.message);
+            throw new Error("Không thể tải ảnh từ Google Photos. Có thể Token hết hạn!");
         });
-        
-        // 2. Chuyển ảnh thành dạng Base64
+        console.log("✅ Tải ảnh Google thành công!");
+
+        // LOG 3: Chuyển đổi Base64
         const base64Image = Buffer.from(googleRes.data, 'binary').toString('base64');
         const dataUri = `data:${googleRes.headers['content-type']};base64,${base64Image}`;
+        console.log("-> Đã chuyển ảnh sang Base64.");
 
-        // 3. Ném cục Base64 đó lên Cloudinary để lấy link vĩnh viễn
+        // LOG 4: Upload lên Cloudinary
+        console.log("-> Đang đẩy lên Cloudinary...");
         const uploadRes = await cloudinary.uploader.upload(dataUri, {
             folder: 'cxe_photos_agu'
+        }).catch(err => {
+            console.error("❌ Lỗi Cloudinary Upload:", err.message);
+            throw new Error("Cloudinary từ chối nhận ảnh. Bác check lại KEY/SECRET nha!");
         });
+        console.log("✅ Cloudinary trả về link:", uploadRes.secure_url);
 
-        // 4. Lưu MongoDB
+        // LOG 5: Lưu MongoDB
+        console.log("-> Đang lưu vào MongoDB...");
         await BaiDang.create({
             urlanh: uploadRes.secure_url,
             tieude: tieude,
             nguoidang: req.user._id
         });
+        console.log("✅ Đã lưu vào MongoDB thành công!");
 
+        console.log("=== [DONE] CHIA SẺ HOÀN TẤT ===");
         res.redirect('/'); 
+
     } catch (error) {
-        console.error("Lỗi chia sẻ:", error.message);
-        res.redirect('/thu_vien');
+        console.error("=== [FAIL] LỖI CHIA SẺ ===");
+        console.error("Nội dung lỗi:", error.message);
+        // Nếu lỗi, quăng ra trang thông báo cho bác dễ nhìn
+        res.status(500).send(`Lỗi rồi bác Luke ơi: ${error.message}`);
     }
 });
 
