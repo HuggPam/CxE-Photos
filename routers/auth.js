@@ -14,7 +14,7 @@ router.get('/google', passport.authenticate('google', {
 }));
 
 // Link: /auth/google/callback
-router.get('auth/google/callback', 
+router.get('/google/callback', 
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
         req.session.success = "Chào " + req.user.displayName + "! Đã kết nối Google Photos.";
