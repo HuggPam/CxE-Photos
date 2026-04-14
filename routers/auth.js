@@ -12,7 +12,7 @@ router.get('/google', passport.authenticate('google', {
     prompt: 'consent',   
     accessType: 'offline' 
 }));
-
+console.log("=== ĐÃ LOAD FILE AUTH.JS THÀNH CÔNG ===");
 // Link: /auth/google/callback
 router.get('/google/callback', 
     passport.authenticate('google', { failureRedirect: '/' }),
