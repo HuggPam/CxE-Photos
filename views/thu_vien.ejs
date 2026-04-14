@@ -36,48 +36,42 @@
 
                     <div class="user-profile">
                         <% if (user) { %>
-                            <img src="<%= user.anhDaiDien %>" alt="Avatar" class="avatar-circle" title="<%= user.hoTen %>">
+                            <img src="<%= user.anhDaiDien %>" alt="Avatar" class="avatar-circle"
+                                title="<%= user.hoTen %>">
                             <a href="/auth/logout" class="btn-logout">Đăng xuất</a>
-                        <% } else { %>
-                            <a href="/auth/google" class="btn-dang-nhap">Đăng nhập</a>
-                        <% } %>
+                            <% } else { %>
+                                <a href="/auth/google" class="btn-dang-nhap">Đăng nhập</a>
+                                <% } %>
                     </div>
                 </div>
             </div>
 
             <div class="container-fluid mt-3">
-                <div class="d-flex justify-content-between align-items-center mb-4 ps-2 pe-3">
-                    <h4>Ảnh bạn vừa lấy từ Google</h4>
-                    <a href="/thu_vien" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">
-                        <i class="fa-solid fa-images"></i> Chọn thêm ảnh khác
-                    </a>
-                </div>
+                <h4 class="mb-4 ps-2">Ảnh bạn vừa chọn từ Google</h4>
 
                 <div class="luoi-anh-cxe">
-                    <% if (images && images.length > 0) { %>
-                        <% images.forEach(function(item) { %>
+                    <% if (images && images.length> 0) { %>
+                        <% images.forEach(function(img) { %>
                             <div class="item-anh">
-                                <img src="/thu_vien/anh-proxy?url=<%= encodeURIComponent(item.mediaFile.baseUrl + '=w500') %>" alt="Ảnh từ Google Photos" loading="lazy">
+                                <img src="/thu_vien/anh_proxy?url=<%= encodeURIComponent(img.baseUrl) %>"
+                                    alt="Google Photo" loading="lazy">
 
                                 <div class="overlay-anh">
-                                    <form action="/thu_vien/chia-se" method="POST" class="p-2 w-100">
-                                        <input type="hidden" name="urlgoc" value="<%= item.mediaFile.baseUrl %>">
+                                    <form action="/thu_vien/chia_se" method="POST" style="width: 90%;">
+                                        <input type="hidden" name="urlgoc" value="<%= img.baseUrl %>">
                                         <input type="text" name="tieude" class="form-control form-control-sm mb-2"
-                                            placeholder="Đặt tiêu đề ảnh..." required>
-                                        <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold">
-                                            <i class="fa-solid fa-cloud-arrow-up"></i> Chia sẻ
-                                        </button>
+                                            placeholder="Tiêu đề ảnh...">
+                                        <button type="submit" class="btn-luu-anh w-100">Chia sẻ ngay</button>
                                     </form>
                                 </div>
                             </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="thong-bao-trong text-center mt-5 w-100">
-                            <i class="fa-solid fa-cloud-sun fa-3x text-muted mb-3"></i>
-                            <p class="fs-5 text-muted">Bạn chưa chọn tấm ảnh nào!</p>
-                            <a href="/thu_vien" class="btn btn-primary mt-2">Mở kho ảnh Google ngay</a>
-                        </div>
-                    <% } %>
+                            <% }); %>
+                                <% } else { %>
+                                    <div class="text-center w-100 py-5">
+                                        <p class="text-muted">Không tìm thấy ảnh nào. Bác chọn lại xem sao!</p>
+                                        <a href="/thu_vien" class="btn btn-warning btn-sm">Quay lại Bước 1</a>
+                                    </div>
+                                    <% } %>
                 </div>
             </div>
         </div>

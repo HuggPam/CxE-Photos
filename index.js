@@ -9,6 +9,7 @@ const app = express();
 const indexRouter = require('./routers/index');
 const authRouter = require('./routers/auth');
 const thuVienRouter = require('./routers/thu_vien');
+const profileRouter = require('./routers/profile');
 
 const uri = process.env.MONGODB_URI; 
 mongoose.connect(uri)
@@ -57,6 +58,7 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 app.use('/auth', authRouter);     
 app.use('/thu_vien', thuVienRouter);
+app.use('/profile', profileRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

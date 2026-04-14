@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body class="bg-light">
+
+    <div class="d-flex">
+        <div class="main-content flex-grow-1 p-4">
+            <a href="/" class="btn btn-light rounded-circle mb-3 shadow-sm"><i class="fa-solid fa-arrow-left"></i></a>
+
+            <div class="container">
+                <div class="row bg-white shadow-lg rounded-5 overflow-hidden border">
+
+                    <div class="col-md-7 p-0 bg-dark d-flex align-items-center justify-content-center">
+                        <img src="<%= item.urlanh %>" class="img-fluid w-100"
+                            style="max-height: 85vh; object-fit: contain;">
+                    </div>
+
+                    <div class="col-md-5 p-5 d-flex flex-column">
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <% if (item.nguoidang && item.nguoidang.anhDaiDien) { %>
+                                    <img src="<%= item.nguoidang.anhDaiDien %>" class="rounded-circle me-3"
+                                        style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #ffc107;">
+                                    <% } %>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold fs-5">
+                                                <%= item.nguoidang ? item.nguoidang.hoTen : 'Người dùng ẩn danh' %>
+                                            </h6>
+                                            <small class="text-muted">Đã chia sẻ</small>
+                                        </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="d-flex align-items-center">
+                                </div>
+
+                                <form action="/save/<%= item._id %>" method="POST">
+                                    <input type="hidden" name="returnUrl" value="/chi_tiet/<%= item._id %>">
+
+                                    <button type="submit"
+                                        class="btn <%= user && user.daLuu && user.daLuu.includes(item._id) ? 'btn-dark' : 'btn-warning' %> rounded-pill px-4 fw-bold shadow-sm">
+                                        <i class="fa-solid fa-bookmark me-2"></i>
+                                        <%= user && user.daLuu && user.daLuu.includes(item._id) ? 'Đã lưu' : 'Lưu' %>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <h2 class="fw-bold mt-2">
+                            <%= item.tieude %>
+                        </h2>
+                        <p class="text-secondary fs-5 mt-3">
+                            <%= item.mota || 'Ảnh này đẹp quá mà chưa kịp viết mô tả!' %>
+                        </p>
+
+                        <div class="mt-auto pt-4 border-top d-flex align-items-center gap-3">
+                            <form action="/like/<%= item._id %>" method="POST">
+                                <button type="submit" class="btn btn-outline-danger rounded-pill px-4 fw-bold">
+                                    <i class="fa-solid fa-heart me-2"></i>
+                                    <%= item.likes ? item.likes.length : 0 %> Tim
+                                </button>
+                            </form>
+
+                            <button onclick="taiAnhNgay('<%= item.urlanh %>', 'CinexE_<%= item._id %>.jpg')"
+                                class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm">
+                                <i class="fa-solid fa-download me-2"></i>Tải về máy
+                            </button>
+
+                            <script>
+                                async function taiAnhNgay(url, tenFile) {
+                                    try {
+                                        const response = await fetch(url);
+                                        const blob = await response.blob();
+                                        const link = document.createElement("a");
+                                        link.href = URL.createObjectURL(blob);
+                                        link.download = tenFile;
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    } catch (err) {
+                                        // Nếu ảnh được bảo mật cao quá không cho fetch, thì mở tab mới cho tự tải
+                                        window.open(url, '_blank');
+                                    }
+                                }
+                            </script>
+
+                            <span class="ms-auto"><i class="fa-solid fa-share-nodes fs-4 text-secondary"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="mt-5 mb-4 fw-bold">Khám phá thêm</h4>
+                <div class="luoi-anh-cxe">
+                    <% related.forEach(function(r) { %>
+                        <div class="item-anh">
+                            <a href="/chi_tiet/<%= r._id %>">
+                                <img src="<%= r.urlanh %>" class="rounded-4">
+                            </a>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

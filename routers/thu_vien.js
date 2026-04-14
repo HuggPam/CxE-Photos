@@ -5,12 +5,11 @@ const cloudinary = require('cloudinary').v2;
 const BaiDang = require('../models/baidang');
 
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_NAME,
-    api_key: process.env.CLOUDINARY_KEY,
-    api_secret: process.env.CLOUDINARY_SECRET
+    cloud_name: 'dozbjg1wo',
+    api_key: '758495254216138',
+    api_secret: 'NCJaoI0zyu3ETQ1IQ09yKSOQxPY'
 });
 
-// 1. ROUTE TẠO PHIÊN CHỌN ẢNH
 router.get('/', async (req, res) => {
     if (!req.user || !req.user.accessToken) return res.redirect('/');
     try {
@@ -21,7 +20,6 @@ router.get('/', async (req, res) => {
     } catch (error) { res.send("Lỗi tạo phiên chọn ảnh!"); }
 });
 
-// 2. ROUTE HỨNG DANH SÁCH ẢNH
 router.get('/danh_sach', async (req, res) => {
     const sessionId = req.query.sessionId;
     if (!sessionId) return res.send("Không tìm thấy mã phiên!");
@@ -34,9 +32,7 @@ router.get('/danh_sach', async (req, res) => {
     } catch (error) { res.send("Lỗi tải danh sách ảnh!"); }
 });
 
-// ================================================================
-// 3. ROUTE PROXY: ĐÓNG VAI TRÒ "NGƯỜI VẬN CHUYỂN" ẢNH CHO GIAO DIỆN
-// ================================================================
+
 router.get('/anh-proxy', async (req, res) => {
     try {
         const imageUrl = req.query.url;
@@ -48,9 +44,7 @@ router.get('/anh-proxy', async (req, res) => {
     } catch (error) { res.status(500).send('Lỗi tải ảnh'); }
 });
 
-// ================================================================
-// 4. ROUTE POST CHIA SẺ (Đẩy lên Cloudinary và Mongo)
-// ================================================================
+
 router.post('/chia-se', async (req, res) => {
     try {
         const { urlgoc, tieude } = req.body;

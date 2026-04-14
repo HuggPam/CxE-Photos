@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CxE Photos - Khám phá cộng đồng</title>
+    <title>CinexE - Khám phá cảm hứng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
@@ -15,81 +15,87 @@
     <div class="d-flex">
         <div class="sidebar d-flex flex-column align-items-center">
             <a href="/" class="sidebar-logo"> <img src="/images/logo.png" alt="Logo" class="img-logo"></a>
-
-            <a href="/" class="sidebar-item active">
-                <i class="fa-solid fa-house"></i>
-            </a>
-            <a href="/thu_vien" class="sidebar-item" title="Kho ảnh Google của tôi">
-                <i class="fa-solid fa-cloud"></i>
-            </a>
-            <a href="/upload" class="sidebar-item">
-                <i class="fa-solid fa-plus"></i>    
-            </a>
-            <a href="/profile" class="sidebar-item mt-auto">
-                <i class="fa-solid fa-user"></i>
-            </a>
+            <a href="/" class="sidebar-item active"><i class="fa-solid fa-house"></i></a>
+            <a href="/thu_vien" class="sidebar-item" title="Kho ảnh Google của tôi"><i
+                    class="fa-solid fa-cloud"></i></a>
+            <a href="/upload" class="sidebar-item"><i class="fa-solid fa-plus"></i></a>
+            <a href="/profile" class="sidebar-item mt-auto"><i class="fa-solid fa-user"></i></a>
         </div>
 
         <div class="main-content flex-grow-1">
             <div class="top-bar">
                 <div class="header-container">
-                    <div class="search-box">
-                        <i class="fa fa-search"></i>
-                        <input type="text" class="search-input" placeholder="Tìm kiếm cảm hứng...">
-                    </div>
+                    <form action="/search" method="GET" class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" name="q" class="search-input" placeholder="Tìm kiếm cảm hứng..."
+                            value="<%= typeof tuKhoa !== 'undefined' ? tuKhoa : '' %>">
+                    </form>
 
                     <div class="user-profile">
                         <% if (user) { %>
-                            <img src="<%= user.anhDaiDien %>" alt="Avatar" class="avatar-circle" title="<%= user.hoTen %>">
-                            <a href="/auth/logout" class="btn-logout">Đăng xuất</a>
-                        <% } else { %>
-                            <a href="/auth/google" class="btn-dang-nhap">Đăng nhập</a>
-                        <% } %>
+                            <img src="<%= user.anhDaiDien %>" alt="Avatar" class="avatar-circle"
+                                title="<%= user.hoTen %>">
+                            <a href="/auth/logout" class="btn-logout ms-2">Đăng xuất</a>
+                            <% } else { %>
+                                <a href="/auth/google" class="btn-dang-nhap">Đăng nhập</a>
+                                <% } %>
                     </div>
                 </div>
             </div>
 
             <div class="container-fluid mt-3">
                 <h4 class="mb-4 ps-2">Khám phá hôm nay</h4>
-                
-                <div class="luoi-anh-cxe">
-                    <% if (images && images.length > 0) { %>
-                        <% images.forEach(function(item) { %>
-                            <div class="item-anh">
-                                <img src="<%= item.urlanh %>" alt="<%= item.tieude %>" loading="lazy">
 
-                                <div class="overlay-anh">
-                                    <div class="d-flex justify-content-between align-items-center w-100 p-2">
-                                        <button class="btn btn-danger btn-sm rounded-pill px-3">Lưu</button>
-                                        <div class="tuong-tac">
-                                            <i class="fa-regular fa-heart me-2"></i>
-                                            <i class="fa-regular fa-comment"></i>
-                                        </div>
+                <div class="luoi-anh-cxe">
+                    <% if (images && images.length> 0) { %>
+                        <% images.forEach(function(item) { %>
+                            <div class="item-anh position-relative">
+                                <a href="/chi_tiet/<%= item._id %>">
+                                    <img src="<%= item.urlanh %>" class="w-100 rounded-4 shadow-sm">
+                                </a>
+
+                                <div class="overlay-anh d-flex flex-column justify-content-between p-3">
+                                    <div class="d-flex justify-content-end">
+                                        <form action="/save/<%= item._id %>" method="POST">
+                                            <input type="hidden" name="returnUrl" value="/">
+                                            <button type="submit"
+                                                class="btn-luu-anh <%= user && user.daLuu && user.daLuu.includes(item._id) ? 'btn-da-luu' : '' %>"
+                                                <% if (user && user.daLuu && user.daLuu.includes(item._id)) { %>
+                                                style="background: #333; color: white;"
+                                                <% } %>>
+                                                <%= user && user.daLuu && user.daLuu.includes(item._id) ? 'Đã lưu'
+                                                    : 'Lưu' %>
+                                            </button>
+                                        </form>
                                     </div>
-                                </div>
-                                
-                                <div class="info-anh mt-2 px-1">
-                                    <p class="fw-bold mb-0 text-truncate" style="font-size: 0.9rem;"><%= item.tieude %></p>
-                                    <div class="d-flex align-items-center mt-1">
+
+                                    <div class="info-nguoi-dang d-flex align-items-center text-white">
                                         <% if (item.nguoidang && item.nguoidang.anhDaiDien) { %>
-                                            <img src="<%= item.nguoidang.anhDaiDien %>" class="rounded-circle me-2" style="width: 20px; height: 20px;">
-                                        <% } %>
-                                        <small class="text-secondary"><%= item.nguoidang ? item.nguoidang.hoTen : 'Người dùng ẩn danh' %></small>
+                                            <img src="<%= item.nguoidang.anhDaiDien %>" class="rounded-circle me-2"
+                                                style="width: 24px; height: 24px; object-fit: cover; border: 1px solid white;">
+                                            <% } %>
+                                                <small class="fw-bold text-truncate">
+                                                    <%= item.nguoidang ? item.nguoidang.hoTen : 'User' %>
+                                                </small>
                                     </div>
                                 </div>
                             </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="thong-bao-trong text-center w-100 py-5">
-                            <i class="fa-solid fa-images fa-3x text-light-emphasis mb-3"></i>
-                            <p>Chưa có ảnh nào được chia sẻ. <br>Bác Luke hãy vào <b>Kho ảnh</b> để mở bát tấm đầu tiên đi!</p>
-                            <a href="/thu_vien" class="btn btn-warning mt-2">Đến Thư viện của tôi</a>
-                        </div>
-                    <% } %>
+                            <% }); %>
+                                <% } else { %>
+                                    <div class="col-12 text-center py-5">
+                                        <i class="fa-solid fa-camera-retro fs-1 text-muted mb-3"></i>
+                                        <h5 class="text-secondary">Chưa có ảnh nào được chia sẻ.</h5>
+                                        <p class="text-muted">Bác Luke hãy là người mở bát tấm đầu tiên đi!</p>
+                                        <a href="/upload" class="btn btn-warning rounded-pill px-4 fw-bold">Tải ảnh lên
+                                            ngay</a>
+                                    </div>
+                                    <% } %>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
