@@ -55,6 +55,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.set('trust proxy', 1);
 app.use('/', indexRouter);
 app.use('/auth', authRouter);     
 app.use('/thu_vien', thuVienRouter);
